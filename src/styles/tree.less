@@ -81,6 +81,16 @@
     &__wrapper {
       display: flex;
       flex-direction: column;
+      border: 1px solid rgba(0, 0, 0, 0);
+    }
+    &_selected {
+      background-color: @color-basic-bt-hover;
+    }
+    &_hover {
+      &:hover {
+        border: 1px solid @color-basic-blue-blue-1;
+        background: rgba(0, 0, 0, 0.1);
+      }
     }
 
     // 拖拽区域
@@ -188,7 +198,7 @@
         transition: all 0.2s ease-in-out;
       }
 
-      @media(any-hover:hover) {
+      @media (any-hover: hover) {
         &:hover {
           border-color: @ctree-color-disabled;
         }
@@ -209,12 +219,11 @@
           transform: rotate(45deg) scale(1);
         }
 
-        @media(any-hover:hover) {
+        @media (any-hover: hover) {
           &:hover {
             .active-color();
           }
         }
-
       }
 
       &_indeterminate {
@@ -228,12 +237,11 @@
           transform: scale(1);
         }
 
-        @media(any-hover:hover) {
+        @media (any-hover: hover) {
           &:hover {
             .active-color();
           }
         }
-
       }
 
       &_disabled {
@@ -241,7 +249,7 @@
         border-color: @ctree-color-border;
         background-color: @ctree-color-divider;
 
-        @media(any-hover:hover) {
+        @media (any-hover: hover) {
           &:hover {
             border-color: @ctree-color-border;
             background-color: @ctree-color-divider;
@@ -265,27 +273,21 @@
       flex: 1;
       height: @title-height;
       line-height: @title-height;
-      margin-left: @title-margin-left;
-      padding-left: @title-padding-left;
+      // margin-left: @title-margin-left;
+      // padding-left: @title-padding-left;
+      padding: 0 8px;
       background-color: transparent;
       word-break: keep-all;
       white-space: nowrap;
       word-wrap: none;
-
-      @media(any-hover:hover) {
-        &:hover {
-          background-color: lighten(@ctree-color-light-primary, 28%);
-        }
-      }
-
+      color: @color-basic-white-white_60;
+      font-size: 12px;
       &_selected {
         .selected () {
-          background-color: lighten(@ctree-color-primary, 35%);
+          color: @color-basic-white-white_80;
         }
-
         .selected();
-
-        @media(any-hover:hover) {
+        @media (any-hover: hover) {
           &:hover {
             .selected();
           }

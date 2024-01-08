@@ -1,35 +1,19 @@
 <template>
   <div :class="wrapperCls">
     <!-- 滚动区域 -->
-    <div
-      ref="scrollArea"
-      :class="scrollAreaCls"
-      @scroll.passive.stop="handleTreeScroll"
-    >
+    <div ref="scrollArea" :class="scrollAreaCls" @scroll.passive.stop="handleTreeScroll">
       <!-- 可见节点区域，包括上下两片空白加渲染的节点 -->
       <div :class="blockAreaCls">
         <div :style="topSpaceStyles"></div>
-        <CTreeNode
-          v-for="node in renderNodes"
-          v-bind="$props"
-          :key="node[keyField]"
-          :data="node"
-          :getNode="getNode"
-          v-on="treeNodeListeners"
-          :class="
-            typeof nodeClassName === 'function'
+        <CTreeNode v-for="node in renderNodes" v-bind="$props" :key="node[keyField]" :data="node" :getNode="getNode"
+          v-on="treeNodeListeners" :class="typeof nodeClassName === 'function'
               ? nodeClassName(node)
               : nodeClassName
-          "
-          :style="{
-            minHeight: `${nodeMinHeight}px`,
-            paddingLeft: `${node._level * nodeIndent}px`
-          }"
-          @check="handleNodeCheck"
-          @select="handleNodeSelect"
-          @expand="handleNodeExpand"
-          @node-drop="handleNodeDrop"
-        />
+            " :style="{
+    minHeight: `${nodeMinHeight}px`,
+    paddingLeft: `${node._level * nodeIndent}px`
+  }" @check="handleNodeCheck" @select="handleNodeSelect" @expand="handleNodeExpand"
+          @node-drop="handleNodeDrop" />
         <div :style="bottomSpaceStyles"></div>
       </div>
     </div>
@@ -260,6 +244,7 @@ export default defineComponent({
 
     /** 节点渲染 render 函数 */
     render: Function as PropType<(node: TreeNode) => VNode>,
+    renderIcon: Function as PropType<(node: TreeNode) => VNode>,
 
     /** 节点过滤方法 */
     filterMethod: Function as PropType<FilterFunctionType>,
@@ -677,7 +662,7 @@ export default defineComponent({
             setData(root as AnyPropsArrayType)
           }
         })
-        .catch(() => {})
+        .catch(() => { })
         .then(() => {
           isRootLoading.value = false
         })

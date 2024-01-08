@@ -3,31 +3,20 @@
     <div :class="dropBeforeCls"></div>
     <div ref="nodeBody" :class="nodeBodyCls" v-on="dropListeners">
       <!-- 展开按钮 -->
-      <div :class="expandCls">
-        <!-- 外层用于占位，icon 用于点击 -->
-        <i
-          v-show="!data?.isLeaf && !data?._loading"
-          @click="handleExpand"
-        ></i>
-        <LoadingIcon v-if="data?._loading" :class="loadingIconCls" />
-      </div>
-
-      <!-- 复选框 -->
-      <div v-if="showCheckbox" :class="checkboxWrapperCls">
-        <div :class="checkboxCls" @click="handleCheck"></div>
+      <div v-show="renderIconFunction" :class="expandCls">
+        <div @click="handleExpand">
+          <component v-if="renderIconFunction" :is="renderIconComponent">
+          </component>
+        </div>
       </div>
 
       <!-- 标题 -->
-      <div
-        :class="titleCls"
-        @click="handleSelect"
-        @dblclick="handleDblclick"
-        @contextmenu="handleRightClick"
-        v-on="dragListeners"
-        :draggable="draggable && !disableAll && !data?.disabled"
-      >
-        <component v-if="renderFunction" :is="renderComponent"></component>
-        <template v-else>{{ data ? data[titleField] : '' }}</template>
+      <div :class="titleCls" @click="handleSelect" @dblclick="handleDblclick" @contextmenu="handleRightClick"
+        v-on="dragListeners" :draggable="draggable && !disableAll && !data?.disabled">
+        <component v-if="renderFunction" :is="renderComponent">
+        </component>
+        <template v-else>{{ data ? data[titleField] : '' }}
+        </template>
       </div>
     </div>
     <div :class="dropAfterCls"></div>
@@ -70,6 +59,7 @@ export default defineComponent({
 
     /** 节点渲染 render 函数 */
     render: Function as PropType<(node: TreeNode) => VNode>,
+    renderIcon: Function as PropType<(node: TreeNode) => VNode>,
 
     /** 是否可多选 */
     checkable: Boolean,
@@ -103,17 +93,18 @@ export default defineComponent({
         `${prefixCls}__wrapper`,
         {
           [`${prefixCls}__wrapper_is-leaf`]: props.data?.isLeaf,
-          [`${prefixCls}_disabled`]:
-            props.disableAll || props.data?.disabled
+          [`${prefixCls}_disabled`]: props.data?.selected
         },
         // 复选
         {
           [`${prefixCls}_checked`]: props.checkable && props.data?.checked,
-          [`${prefixCls}_indeterminate`]: props.checkable && props.data?.indeterminate
+          [`${prefixCls}_indeterminate`]:
+            props.checkable && props.data?.indeterminate
         },
         // 单选
         {
           [`${prefixCls}_selected`]: props.data?.selected,
+          [`${prefixCls}_hover`]: !props.data?.selected
         }
       ]
     })
@@ -144,10 +135,7 @@ export default defineComponent({
     // const squareCls = computed(() => {
     //   return [`${prefixCls}__square`]
     // })
-    // 复选框图标
-    const checkboxWrapperCls = computed(() => {
-      return [`${prefixCls}__square`, `${prefixCls}__checkbox_wrapper`]
-    })
+
     const expandCls = computed(() => {
       return [
         `${prefixCls}__square`,
@@ -160,24 +148,16 @@ export default defineComponent({
     const loadingIconCls = computed(() => {
       return [`${prefixCls}__loading-icon`]
     })
-    const checkboxCls = computed(() => {
-      return [
-        `${prefixCls}__checkbox`,
-        {
-          [`${prefixCls}__checkbox_checked`]: props.data?.checked,
-          [`${prefixCls}__checkbox_indeterminate`]: props.data?.indeterminate,
-          [`${prefixCls}__checkbox_disabled`]:
-            props.disableAll || props.data?.disabled
-        }
-      ]
-    })
+
     const titleCls = computed(() => {
       return [
         `${prefixCls}__title`,
         {
-          [`${prefixCls}__title_selected`]: props.data?.selected,
           [`${prefixCls}__title_disabled`]:
             props.disableAll || props.data?.disabled
+        },
+        {
+          [`${prefixCls}__title_selected`]: props.data?.selected
         }
       ]
     })
@@ -188,9 +168,7 @@ export default defineComponent({
         ({} as TreeNode)
       )
     })
-    const showCheckbox = computed(() => {
-      return props.checkable
-    })
+
     const renderFunction = props.data?.render || props.render || null
     const renderComponent = computed(() => {
       return defineComponent({
@@ -199,6 +177,17 @@ export default defineComponent({
         render() {
           if (typeof renderFunction !== 'function') return h('div')
           return renderFunction(fullData.value)
+        }
+      })
+    })
+    const renderIconFunction = props.data?.renderIcon || props.renderIcon || null
+    const renderIconComponent = computed(() => {
+      return defineComponent({
+        name: 'Render_Icon',
+        functional: true,
+        render() {
+          if (typeof renderIconFunction !== 'function') return h('div')
+          return renderIconFunction(props.data)
         }
       })
     })
@@ -235,6 +224,7 @@ export default defineComponent({
     }
 
     function handleSelect(e: MouseEvent): void {
+      console.log(this, 'this')
       emit('click', fullData.value, e)
       if (props.selectable) {
         if (props.disableAll || props.data?.disabled) return
@@ -333,15 +323,14 @@ export default defineComponent({
       dropBeforeCls,
       dropAfterCls,
       // squareCls,
-      checkboxWrapperCls,
       expandCls,
       loadingIconCls,
-      checkboxCls,
       titleCls,
       fullData,
-      showCheckbox,
       renderFunction,
       renderComponent,
+      renderIconFunction,
+      renderIconComponent,
       dragListeners,
       dropListeners,
       // titleField,

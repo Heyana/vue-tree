@@ -1,13 +1,8 @@
 <template>
   <div class="tab">
-    <button
-      v-for="tab in tabList"
-      :key="tab"
-      :class="{
-        active: currentTab === tab
-      }"
-      @click="currentTab = tab"
-    >
+    <button v-for="tab in tabList" :key="tab" :class="{
+      active: currentTab === tab
+    }" @click="currentTab = tab">
       {{ tab }}
     </button>
   </div>
@@ -97,5 +92,6 @@ export default defineComponent({
 .tab-panel {
   flex: 1;
   overflow-y: auto;
+  background-color: #2e2f33;
 }
 </style>

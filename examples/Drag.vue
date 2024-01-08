@@ -1,13 +1,6 @@
 <template>
   <div>
-    <VTree
-      v-model="value"
-      :data="data"
-      checkable
-      draggable
-      droppable
-      @node-drop="handleDrop"
-    >
+    <VTree v-model="value" :data="data" selectable draggable droppable @node-drop="handleDrop">
       <template #empty>slot 传进来的暂无数据</template>
     </VTree>
     {{ value }}
