@@ -6,14 +6,13 @@
       <div :class="blockAreaCls">
         <div :style="topSpaceStyles"></div>
         <CTreeNode v-for="node in renderNodes" v-bind="$props" :key="node[keyField]" :data="node" :getNode="getNode"
-          v-on="treeNodeListeners" :class="typeof nodeClassName === 'function'
-              ? nodeClassName(node)
-              : nodeClassName
+          :getTreeNode="getTreeData" v-on="treeNodeListeners" :class="typeof nodeClassName === 'function'
+            ? nodeClassName(node)
+            : nodeClassName
             " :style="{
     minHeight: `${nodeMinHeight}px`,
     paddingLeft: `${node._level * nodeIndent}px`
-  }" @check="handleNodeCheck" @select="handleNodeSelect" @expand="handleNodeExpand"
-          @node-drop="handleNodeDrop" />
+  }" @check="handleNodeCheck" @select="handleNodeSelect" @expand="handleNodeExpand" @node-drop="handleNodeDrop" />
         <div :style="bottomSpaceStyles"></div>
       </div>
     </div>
@@ -90,7 +89,8 @@ export default defineComponent({
     CTreeNode,
     LoadingIcon
   },
-  emits: ['update:modelValue', ...TREE_NODE_EVENTS, ...storeEvents],
+  emits: ['update:modelValue', ...TREE_NODE_EVENTS, ...storeEvents,
+  ],
   props: {
     /** 单选模式下为字符串或数字，多选模式下为数组或者以 separator 分隔的字符串。当即可单选又可多选时，value 是多选的值 */
     modelValue: [String, Number, Array] as PropType<
@@ -320,6 +320,7 @@ export default defineComponent({
     // }
   },
   setup(props, ctx) {
+    console.log(this, props, ctx, 'this,props');
     const prefixCls = 'ctree-tree'
     const sameValue = (newVal: VModelType, valueCache: VModelType): boolean => {
       if (Array.isArray(newVal) && Array.isArray(valueCache)) {
@@ -729,7 +730,10 @@ export default defineComponent({
       )
     }
     function handleNodeSelect(node: TreeNode): void {
+
       if (props.enableLeafOnly && !node.isLeaf) return
+      onSelectChange(node)
+
       nonReactive.store.setSelected(node[props.keyField], !node.selected)
     }
     function handleNodeExpand(node: TreeNode): void {
@@ -909,9 +913,29 @@ export default defineComponent({
       )
       // props.updateRenderNodes(true)
     }
+    let _lastSelectedNode: any = ref(null)
+    const onSelectChange = (node: TreeNode) => {
+      console.log(80, '80');
+      if (_lastSelectedNode.value) {
+        deepSetSubSelect(_lastSelectedNode.value, false)
+      }
+      _lastSelectedNode.value = node
+      deepSetSubSelect(node, true)
+
+    }
+    const deepSetSubSelect = (node: TreeNode, state: boolean) => {
+      node.children.map((i) => {
+        i.subSelected = state
+        if (i.children.length) {
+          console.log(i, 'i');
+          deepSetSubSelect(i, state)
+        }
+      })
+    }
     const methods = {
       setData,
       setChecked,
+      onSelectChange,
       setCheckedKeys,
       checkAll,
       clearChecked,

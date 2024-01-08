@@ -86,7 +86,8 @@ export default defineComponent({
 
     /** 是否可放置 */
     droppable: Boolean,
-    getNode: Function as PropType<GetNodeFn>
+    getNode: Function as PropType<GetNodeFn>,
+    getTreeNode: Function
   },
   emits: [...TREE_NODE_EVENTS],
   setup(props, { emit }) {
@@ -112,10 +113,13 @@ export default defineComponent({
         // 单选
         {
           [`${prefixCls}_selected`]: props.data?.selected,
-          [`${prefixCls}_hover`]: !props.data?.selected
+          [`${prefixCls}_hover`]: !props.data?.selected && !isSubActive()
         },
         {
           [`${prefixCls}__drop_active`]: dragoverBody.value
+        },
+        {
+          [`${prefixCls}_sub_selected`]: isSubActive()
         }
       ]
     })
@@ -231,9 +235,14 @@ export default defineComponent({
       if (props.disableAll || props.data?.disabled || !props.checkable) return
       emit('check', fullData.value)
     }
+    function onSelectChange(): void {
+      console.log(scope, fullData.value, props, props.getTreeNode?.(), 'this')
+    }
+    function deepsetVisieble() {
+
+    }
 
     function handleSelect(e: MouseEvent): void {
-      console.log(this, 'this')
       emit('click', fullData.value, e)
       if (props.selectable) {
         if (props.disableAll || props.data?.disabled) return
@@ -244,6 +253,7 @@ export default defineComponent({
       } else {
         handleExpand()
       }
+      onSelectChange()
     }
 
     function handleDblclick(e: MouseEvent): void {
@@ -318,6 +328,10 @@ export default defineComponent({
       const hoverPart = getHoverPart(e)
       resetDragoverFlags(hoverPart, true)
       emit('node-drop', fullData.value, e, hoverPart)
+    }
+    const scope = this
+    function isSubActive() {
+      return props.data?.subSelected
     }
 
     return {

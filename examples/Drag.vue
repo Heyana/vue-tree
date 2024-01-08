@@ -22,7 +22,7 @@ export default defineComponent({
       return treeDataGenerator(
         Object.assign(
           {
-            treeDepth: 3,
+            treeDepth: 2,
             nodesPerLevel: 5,
             sameIdTitle: true,
             inOrder: true,
