@@ -92,15 +92,20 @@
         background: rgba(0, 0, 0, 0.1);
       }
     }
+    &__drop_active {
+      background-color: @color-basic-blue-blue-2_60;
+    }
 
     // 拖拽区域
     &__drop {
       width: 100%;
       height: 2px;
+      position: absolute;
+      left: 0;
 
-      &_active {
-        background-color: @ctree-color-light-primary;
-      }
+      // &_active {
+      //   background-color: @ctree-color-light-primary;
+      // }
     }
 
     // 节点本体
@@ -275,7 +280,7 @@
       line-height: @title-height;
       // margin-left: @title-margin-left;
       // padding-left: @title-padding-left;
-      padding: 0 8px;
+      padding: 0 4px;
       background-color: transparent;
       word-break: keep-all;
       white-space: nowrap;

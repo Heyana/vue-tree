@@ -3,11 +3,19 @@
     <div :class="dropBeforeCls"></div>
     <div ref="nodeBody" :class="nodeBodyCls" v-on="dropListeners">
       <!-- 展开按钮 -->
-      <div v-show="renderIconFunction" :class="expandCls">
-        <div @click="handleExpand">
+      <div :class="expandCls">
+        <div v-if="renderIconFunction" @click="handleExpand">
           <component v-if="renderIconFunction" :is="renderIconComponent">
           </component>
         </div>
+        <div v-else>
+          <div :class="expandCls">
+            <!-- 外层用于占位，icon 用于点击 -->
+            <i v-show="!data?.isLeaf && !data?._loading" @click="handleExpand"></i>
+            <LoadingIcon v-if="data?._loading" :class="loadingIconCls" />
+          </div>
+        </div>
+
       </div>
 
       <!-- 标题 -->
@@ -105,15 +113,16 @@ export default defineComponent({
         {
           [`${prefixCls}_selected`]: props.data?.selected,
           [`${prefixCls}_hover`]: !props.data?.selected
+        },
+        {
+          [`${prefixCls}__drop_active`]: dragoverBody.value
         }
       ]
     })
     const nodeBodyCls = computed(() => {
       return [
         `${prefixCls}__node-body`,
-        {
-          [`${prefixCls}__drop_active`]: dragoverBody.value
-        }
+
       ]
     })
     const dropBeforeCls = computed(() => {
