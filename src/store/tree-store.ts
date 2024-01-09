@@ -1,6 +1,7 @@
 import TreeNode, { ITreeNodeOptions } from './tree-node'
 import { ignoreEnum } from '../const'
 import { TreeNodeKeyType, IgnoreType } from '../types'
+import { Ref, ref } from 'vue'
 
 //#region Interfaces
 
@@ -27,6 +28,7 @@ interface IListenersMap {
 export interface IEventNames {
   'set-data': () => void
   'visible-data-change': () => void
+  change: () => void
   'render-data-change': () => void
   expand: NodeGeneralListenerType
   select: NodeGeneralListenerType
@@ -58,6 +60,8 @@ export default class TreeStore {
   /** 树数据 */
   data: TreeNode[] = []
 
+  hideElementIds: Ref<any> = ref({})
+
   /** 扁平化的树数据 */
   flatData: TreeNode[] = []
 
@@ -79,7 +83,17 @@ export default class TreeStore {
   //#endregion Properties
 
   constructor(private readonly options: ITreeStoreOptions) {}
-
+  changeNode(map: { type: 'showElement'; data: any }) {
+    const { type, data } = map
+    switch (type) {
+      case 'showElement':
+        {
+          this.hideElementIds.value[data.id] = false
+          console.log(this, 'this')
+        }
+        break
+    }
+  }
   setData(
     data: ITreeNodeOptions[],
     selectableUnloadKey: TreeNodeKeyType | null = null,
@@ -411,7 +425,7 @@ export default class TreeStore {
     if (!node || (!expandParent && node.isLeaf)) return
 
     if (node.expand === value) return // 当前节点已经是将要设置的状态，直接返回
-
+    console.log(node.isLeaf, 'node.isLeaf')
     if (!node.isLeaf) {
       if (typeof this.options.load === 'function') {
         // 如果节点未加载过且将要设置为加载，则调用 load 方法

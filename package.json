@@ -1,6 +1,6 @@
 {
   "name": "vue-tree-fork",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "types": "./types",
   "description": "A vue tree component using virtual list.",
   "main": "./dist/v3/vue-tree.umd.js",
@@ -67,6 +67,7 @@
     "@faker-js/faker": "^8.0.2",
     "@types/jest": "26.0.14",
     "@vitejs/plugin-vue": "^4.0.0",
+    "@vitejs/plugin-vue-jsx": "^3.1.0",
     "@vue/babel-preset-app": "^5.0.8",
     "@vue/test-utils": "^2.4.1",
     "autoprefixer": "^10.4.13",

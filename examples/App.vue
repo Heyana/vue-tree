@@ -13,6 +13,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive, ref } from 'vue-demi'
+import MyDrag from './MyDrag'
 import Drag from './Drag.vue'
 
 import Loading from './Loading.vue'
@@ -30,7 +31,7 @@ export default defineComponent({
     Loading,
     Search,
     Drop,
-    Drag,
+    MyDrag, Drag,
     SearchRemote,
     // DropDataChange,
     Feature,
@@ -49,6 +50,7 @@ export default defineComponent({
       Drop,
       // DropRemote,
       Drag,
+      MyDrag,
       // DropDataChange,
       InsertRenderTree,
       Mobile

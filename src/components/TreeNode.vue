@@ -91,6 +91,8 @@ export default defineComponent({
   },
   emits: [...TREE_NODE_EVENTS],
   setup(props, { emit }) {
+    const nodeData = props.data
+
     const dragoverBody = ref(false)
     const dragoverBefore = ref(false)
     const dragoverAfter = ref(false)
@@ -126,7 +128,9 @@ export default defineComponent({
     const nodeBodyCls = computed(() => {
       return [
         `${prefixCls}__node-body`,
-
+        {
+          [`${prefixCls}__show-element`]: nodeData?.reacData.showElement
+        }
       ]
     })
     const dropBeforeCls = computed(() => {
@@ -189,7 +193,11 @@ export default defineComponent({
         functional: true,
         render() {
           if (typeof renderFunction !== 'function') return h('div')
-          return renderFunction(fullData.value)
+          return renderFunction({
+            data: fullData.value,
+            emit,
+            nodeData
+          })
         }
       })
     })
@@ -236,7 +244,6 @@ export default defineComponent({
       emit('check', fullData.value)
     }
     function onSelectChange(): void {
-      console.log(scope, fullData.value, props, props.getTreeNode?.(), 'this')
     }
     function deepsetVisieble() {
 

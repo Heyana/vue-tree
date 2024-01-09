@@ -768,6 +768,8 @@ export default defineComponent({
             else if (hoverPart === dragHoverPartEnum.after)
               nonReactive.store.insertAfter(targetKey, referenceKey)
             ctx.emit('node-drop', data, e, hoverPart, getNode(targetKey))
+            handleNodeSelect(data)
+
           }
         } catch (err: any) {
           throw new Error(err)
@@ -843,6 +845,15 @@ export default defineComponent({
       updateBlockData()
       updateRender()
     }
+    function update(): void {
+      nonReactive.blockNodes = nonReactive.store.flatData.filter(
+        node => node.visible
+      )
+      updateBlockData()
+
+      console.log(8908, '8908');
+      updateRender()
+    }
     /**
      * 更新 block 数据相关信息
      */
@@ -899,6 +910,7 @@ export default defineComponent({
       bottomSpaceHeight.value =
         blockAreaHeight.value -
         (topSpaceHeight.value + renderNodes.value.length * props.nodeMinHeight)
+      console.log(renderNodes, 'renderNodes');
     }
     //#endregion Calculate nodes
 
@@ -1036,6 +1048,7 @@ export default defineComponent({
     // })
     onMounted(() => {
       nonReactive.store.on('visible-data-change', updateBlockNodes)
+      nonReactive.store.on('change', update)
       nonReactive.store.on('render-data-change', updateRender)
       nonReactive.store.on(
         'checked-change',

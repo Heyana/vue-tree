@@ -1,3 +1,4 @@
+import { reactive, ref } from 'vue'
 import { TreeNodeKeyType } from '../types'
 
 interface IKeyOption {
@@ -63,6 +64,10 @@ export default class TreeNode {
 
   /** 子节点是否已加载 */
   _loaded: boolean = false
+
+  reacData = reactive({
+    showElement: true
+  })
 
   //#endregion Properties
 
