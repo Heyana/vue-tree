@@ -1,5 +1,6 @@
 import TreeNode, { ITreeNodeOptions } from './tree-node';
 import { TreeNodeKeyType, IgnoreType } from '../types';
+import { Ref } from 'vue';
 interface ITreeStoreOptions {
     [key: string]: any;
     keyField: string;
@@ -17,6 +18,7 @@ interface IMapData {
 export interface IEventNames {
     'set-data': () => void;
     'visible-data-change': () => void;
+    change: () => void;
     'render-data-change': () => void;
     expand: NodeGeneralListenerType;
     select: NodeGeneralListenerType;
@@ -33,6 +35,7 @@ export default class TreeStore {
     private readonly options;
     /** 树数据 */
     data: TreeNode[];
+    hideElementIds: Ref<any>;
     /** 扁平化的树数据 */
     flatData: TreeNode[];
     /** 树数据 map */
@@ -46,6 +49,10 @@ export default class TreeStore {
     /** 事件 listeners */
     private listenersMap;
     constructor(options: ITreeStoreOptions);
+    changeNode(map: {
+        type: 'showElement';
+        data: any;
+    }): void;
     setData(data: ITreeNodeOptions[], selectableUnloadKey?: TreeNodeKeyType | null, checkableUnloadKeys?: TreeNodeKeyType[] | null): void;
     /**
      * 设置单个节点多选选中

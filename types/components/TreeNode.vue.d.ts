@@ -13,6 +13,7 @@ declare const _default: import("vue-demi").DefineComponent<{
     keyField: StringConstructor;
     /** 节点渲染 render 函数 */
     render: PropType<(node: TreeNode) => VNode>;
+    renderIcon: PropType<(node: TreeNode) => VNode>;
     /** 是否可多选 */
     checkable: BooleanConstructor;
     /** 是否可单选 */
@@ -26,6 +27,7 @@ declare const _default: import("vue-demi").DefineComponent<{
     /** 是否可放置 */
     droppable: BooleanConstructor;
     getNode: PropType<GetNodeFn>;
+    getTreeNode: FunctionConstructor;
 }, {
     /** 节点拖拽 dragover */
     dragoverBody: import("vue-demi").Ref<boolean>;
@@ -34,10 +36,10 @@ declare const _default: import("vue-demi").DefineComponent<{
     /** 节点后拖拽 dragover */
     dragoverAfter: import("vue-demi").Ref<boolean>;
     wrapperCls: import("vue-demi").ComputedRef<(string | {
-        [x: string]: boolean | undefined;
+        [x: string]: any;
     })[]>;
     nodeBodyCls: import("vue-demi").ComputedRef<(string | {
-        [x: string]: boolean;
+        [x: string]: boolean | undefined;
     })[]>;
     dropBeforeCls: import("vue-demi").ComputedRef<(string | {
         [x: string]: boolean;
@@ -45,21 +47,18 @@ declare const _default: import("vue-demi").DefineComponent<{
     dropAfterCls: import("vue-demi").ComputedRef<(string | {
         [x: string]: boolean;
     })[]>;
-    squareCls: import("vue-demi").ComputedRef<string[]>;
     expandCls: import("vue-demi").ComputedRef<(string | {
         [x: string]: boolean | undefined;
     })[]>;
     loadingIconCls: import("vue-demi").ComputedRef<string[]>;
-    checkboxCls: import("vue-demi").ComputedRef<(string | {
-        [x: string]: boolean | undefined;
-    })[]>;
     titleCls: import("vue-demi").ComputedRef<(string | {
         [x: string]: boolean | undefined;
     })[]>;
     fullData: import("vue-demi").ComputedRef<any>;
-    showCheckbox: import("vue-demi").ComputedRef<boolean>;
     renderFunction: any;
-    renderComponent: import("vue-demi").ComputedRef<import("vue-demi").DefineComponent<{}, {}, {}, {}, {}, import("vue-demi").ComponentOptionsMixin, import("vue-demi").ComponentOptionsMixin, {}, string, import("vue-demi").VNodeProps & import("vue-demi").AllowedComponentProps & import("vue-demi").ComponentCustomProps, Readonly<import("vue-demi").ExtractPropTypes<{}>>, {}>>;
+    renderComponent: import("vue-demi").ComputedRef<import("vue-demi").DefineComponent<{}, {}, {}, {}, {}, import("vue-demi").ComponentOptionsMixin, import("vue-demi").ComponentOptionsMixin, {}, string, import("vue-demi").PublicProps, Readonly<import("vue-demi").ExtractPropTypes<{}>>, {}, {}>>;
+    renderIconFunction: any;
+    renderIconComponent: import("vue-demi").ComputedRef<import("vue-demi").DefineComponent<{}, {}, {}, {}, {}, import("vue-demi").ComponentOptionsMixin, import("vue-demi").ComponentOptionsMixin, {}, string, import("vue-demi").PublicProps, Readonly<import("vue-demi").ExtractPropTypes<{}>>, {}, {}>>;
     dragListeners: import("vue-demi").ComputedRef<{}>;
     dropListeners: import("vue-demi").ComputedRef<{}>;
     handleExpand: () => void;
@@ -68,7 +67,7 @@ declare const _default: import("vue-demi").DefineComponent<{
     handleDblclick: (e: MouseEvent) => void;
     handleRightClick: (e: MouseEvent) => void;
     nodeBody: import("vue-demi").Ref<any>;
-}, unknown, {}, {}, import("vue-demi").ComponentOptionsMixin, import("vue-demi").ComponentOptionsMixin, string[], string, import("vue-demi").VNodeProps & import("vue-demi").AllowedComponentProps & import("vue-demi").ComponentCustomProps, Readonly<import("vue-demi").ExtractPropTypes<{
+}, unknown, {}, {}, import("vue-demi").ComponentOptionsMixin, import("vue-demi").ComponentOptionsMixin, string[], string, import("vue-demi").PublicProps, Readonly<import("vue-demi").ExtractPropTypes<{
     /** 节点数据，注意！！为了性能，不让 Vue 监听过多属性，这个 data 不是完整的 TreeNode ，不包括 _parent 和 children 属性 */
     data: PropType<TreeNode>;
     /** 节点标题字段 */
@@ -80,6 +79,7 @@ declare const _default: import("vue-demi").DefineComponent<{
     keyField: StringConstructor;
     /** 节点渲染 render 函数 */
     render: PropType<(node: TreeNode) => VNode>;
+    renderIcon: PropType<(node: TreeNode) => VNode>;
     /** 是否可多选 */
     checkable: BooleanConstructor;
     /** 是否可单选 */
@@ -93,6 +93,7 @@ declare const _default: import("vue-demi").DefineComponent<{
     /** 是否可放置 */
     droppable: BooleanConstructor;
     getNode: PropType<GetNodeFn>;
+    getTreeNode: FunctionConstructor;
 }>> & {
     [x: `on${Capitalize<string>}`]: ((...args: any[]) => any) | undefined;
 }, {
@@ -103,5 +104,5 @@ declare const _default: import("vue-demi").DefineComponent<{
     disableAll: boolean;
     draggable: boolean;
     droppable: boolean;
-}>;
+}, {}>;
 export default _default;

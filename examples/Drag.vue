@@ -1,7 +1,11 @@
 <template>
   <div>
 
-    <VTree v-model="value" :data="data" selectable draggable droppable @node-drop="handleDrop" :unselectOnClick='false'>
+    <VTree v-model="value" selectable draggable droppable @node-drop="handleDrop" ref="tree" :unselectOnClick='false'
+      :beforeDropMethod="(a, b, c) => {
+        console.log(a, b, c)
+        return true
+      }">
       <template #empty>slot 传进来的暂无数据</template>
     </VTree>
   </div>
@@ -16,6 +20,10 @@ export default defineComponent({
   name: 'Drag',
   components: {
     VTree, MyDrag
+  },
+  mounted() {
+
+
   },
   setup() {
     const value = ref(['0'])
@@ -33,16 +41,34 @@ export default defineComponent({
         )
       )
     }
+
     const handleDrop = () => {
       console.log('node drop')
     }
     const data = ref(genData().data)
+    const tree = ref(null)
+    console.log(data.value, 'data.value');
+    setTimeout(() => {
+      tree.value.setData(data.value)
+      return
+      console.log(tree.value, 'tree.value');
+      tree.value.methods.setNodeParent({
+        id: '0'
+      }, {
+        id: '6'
+      })
+      setTimeout(() => {
+        tree.value.setData(data.value)
 
+      }, 2000)
+    }, 2000)
+    window.test = data
     return {
       data,
       value,
       genData,
-      handleDrop
+      handleDrop,
+      tree
     }
   }
 })

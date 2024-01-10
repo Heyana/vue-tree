@@ -35,6 +35,10 @@ export default class TreeNode {
     _loading: boolean;
     /** 子节点是否已加载 */
     _loaded: boolean;
+    reacData: {
+        showElement: boolean;
+    };
+    isTreeNode: boolean;
     constructor(options: ITreeNodeOptions, parent?: null | TreeNode, _keyField?: string, _remote?: boolean);
     /**
      * 设置子节点

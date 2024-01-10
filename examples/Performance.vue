@@ -171,6 +171,7 @@ export default defineComponent({
     const handleSetData = () => {
       // this.treeData = cache.concat()
       /** 性能模式 */
+      console.log(cache.value, 'cache.value');
       tree.value.setData(cache.value.concat())
       isTreeSet.value = true
     }

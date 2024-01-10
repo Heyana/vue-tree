@@ -66,6 +66,10 @@ declare const _default: import("vue-demi").DefineComponent<{
             isLeaf: boolean;
             _loading: boolean;
             _loaded: boolean;
+            reacData: {
+                showElement: boolean;
+            };
+            isTreeNode: boolean;
             readonly _keyField: string;
             readonly _remote: boolean;
             setChildren: (children: import("../store/tree-node").ITreeNodeOptions[]) => void;
@@ -86,6 +90,10 @@ declare const _default: import("vue-demi").DefineComponent<{
             isLeaf: boolean;
             _loading: boolean;
             _loaded: boolean;
+            reacData: {
+                showElement: boolean;
+            };
+            isTreeNode: boolean;
             readonly _keyField: string;
             readonly _remote: boolean;
             setChildren: (children: import("../store/tree-node").ITreeNodeOptions[]) => void;
@@ -119,7 +127,7 @@ declare const _default: import("vue-demi").DefineComponent<{
     handleCheckedChange: (nodes: TreeNode[], keys: TreeNodeKeyType[]) => void;
     handleSelectedChange: (node?: TreeNode, key?: TreeNodeKeyType) => void;
     handleSetData: () => void;
-}, unknown, {}, {}, import("vue-demi").ComponentOptionsMixin, import("vue-demi").ComponentOptionsMixin, ("checked-change" | "update:modelValue" | "clear" | "dropdown-visible-change")[], "checked-change" | "update:modelValue" | "clear" | "dropdown-visible-change", import("vue-demi").VNodeProps & import("vue-demi").AllowedComponentProps & import("vue-demi").ComponentCustomProps, Readonly<import("vue-demi").ExtractPropTypes<{
+}, unknown, {}, {}, import("vue-demi").ComponentOptionsMixin, import("vue-demi").ComponentOptionsMixin, ("checked-change" | "clear" | "update:modelValue" | "dropdown-visible-change")[], "checked-change" | "clear" | "update:modelValue" | "dropdown-visible-change", import("vue-demi").PublicProps, Readonly<import("vue-demi").ExtractPropTypes<{
     /** 兼容 Vue 2.5.16 bug */
     modelValue: PropType<string | number | TreeNodeKeyType[]>;
     /** 下拉内容高度 */
@@ -174,5 +182,5 @@ declare const _default: import("vue-demi").DefineComponent<{
     placement: "top" | "bottom" | "bottom-start" | "bottom-end" | "top-start" | "top-end";
     transfer: boolean;
     dropdownWidthFixed: boolean;
-}>;
+}, {}>;
 export default _default;

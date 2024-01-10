@@ -217,8 +217,8 @@ export default defineComponent({
     beforeDropMethod: {
       type: Function as PropType<
         (
-          dragKey: TreeNodeKeyType,
-          dropKey: TreeNodeKeyType,
+          dragNode: TreeNode,
+          dropNode: TreeNode | null,
           hoverPart: dragHoverPartEnum
         ) => boolean
       >,
@@ -700,7 +700,6 @@ export default defineComponent({
       if (scrollArea.value) scrollArea.value.scrollTop = scrollTop
     }
     //#endregion Public API
-
     /** 更新展开的节点 */
     function updateExpandedKeys() {
       if (props.expandedKeys.length) {
@@ -739,6 +738,9 @@ export default defineComponent({
     function handleNodeExpand(node: TreeNode): void {
       nonReactive.store.setExpand(node[props.keyField], !node.expand)
     }
+    const setNodeParent = (parentNode: TreeNode, node: TreeNode) => {
+      nonReactive.store.prepend(node[props.keyField], parentNode[props.keyField])
+    }
     function handleNodeDrop(
       data: TreeNode,
       e: DragEvent,
@@ -749,10 +751,13 @@ export default defineComponent({
         try {
           const targetNodeData = JSON.parse(e.dataTransfer.getData('node'))
           const targetKey = targetNodeData[props.keyField]
+          const targetNode = getNode(targetKey)
+
           const referenceKey = data[props.keyField]
+          console.log(targetNode, referenceKey, data, props.keyField, 'targetNode');
           const shouldDrop: boolean = props.beforeDropMethod(
-            targetKey,
-            referenceKey,
+            data,
+            targetNode,
             hoverPart
           )
           if (shouldDrop) {
@@ -767,7 +772,7 @@ export default defineComponent({
               nonReactive.store.prepend(targetKey, referenceKey)
             else if (hoverPart === dragHoverPartEnum.after)
               nonReactive.store.insertAfter(targetKey, referenceKey)
-            ctx.emit('node-drop', data, e, hoverPart, getNode(targetKey))
+            ctx.emit('node-drop', data, e, hoverPart, targetNode)
             handleNodeSelect(data)
 
           }
@@ -931,8 +936,10 @@ export default defineComponent({
       if (_lastSelectedNode.value) {
         deepSetSubSelect(_lastSelectedNode.value, false)
       }
-      _lastSelectedNode.value = node
-      deepSetSubSelect(node, true)
+      if (node) {
+        _lastSelectedNode.value = node
+        deepSetSubSelect(node, true)
+      }
 
     }
     const deepSetSubSelect = (node: TreeNode, state: boolean) => {
@@ -955,7 +962,7 @@ export default defineComponent({
       clearSelected,
       setExpand,
       setExpandKeys,
-      setExpandAll,
+      setExpandAll, setNodeParent,
       getCheckedNodes,
       getCheckedKeys,
       getIndeterminateNodes,

@@ -60,7 +60,7 @@ declare const _default: import("vue-demi").DefineComponent<{
     };
     isShowingChecked: Ref<boolean>;
     keyword: Ref<string>;
-    debounceTimer: Ref<number | undefined>;
+    debounceTimer: Ref<any>;
     checkedCount: Ref<number>;
     wrapperCls: import("vue-demi").ComputedRef<string[]>;
     searchCls: import("vue-demi").ComputedRef<string[]>;
@@ -91,7 +91,7 @@ declare const _default: import("vue-demi").DefineComponent<{
     onSetData: () => void;
     clearKeyword: () => void;
     search: (keyword1?: string) => Promise<void>;
-}, unknown, {}, {}, import("vue-demi").ComponentOptionsMixin, import("vue-demi").ComponentOptionsMixin, ("search" | "set-data" | "checked-change" | "update:modelValue")[], "search" | "set-data" | "checked-change" | "update:modelValue", import("vue-demi").VNodeProps & import("vue-demi").AllowedComponentProps & import("vue-demi").ComponentCustomProps, Readonly<import("vue-demi").ExtractPropTypes<{
+}, unknown, {}, {}, import("vue-demi").ComponentOptionsMixin, import("vue-demi").ComponentOptionsMixin, ("search" | "set-data" | "checked-change" | "update:modelValue")[], "search" | "set-data" | "checked-change" | "update:modelValue", import("vue-demi").PublicProps, Readonly<import("vue-demi").ExtractPropTypes<{
     /** 兼容 Vue 2.5.16 bug */
     modelValue: PropType<string | number | TreeNodeKeyType[]>;
     /** 搜索输入框的 placeholder */
@@ -156,5 +156,5 @@ declare const _default: import("vue-demi").DefineComponent<{
     searchDisabled: boolean;
     searchRemote: boolean;
     searchDebounceTime: number;
-}>;
+}, {}>;
 export default _default;

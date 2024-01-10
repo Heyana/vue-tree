@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker'
+import TreeStore, { TreeNode } from '../src/store'
 
 export interface ITreeNodeData {
   title?: string | number
@@ -20,7 +21,13 @@ interface IGeneratorOptions {
   useNanoID?: boolean
 }
 
-const genRandomStr = ({ index, useNanoID }: { index?: number; useNanoID?: boolean }): string => {
+const genRandomStr = ({
+  index,
+  useNanoID
+}: {
+  index?: number
+  useNanoID?: boolean
+}): string => {
   if (useNanoID) {
     return faker.string.nanoid()
   }
@@ -34,7 +41,7 @@ export default ({
   sameIdTitle = false,
   inOrder = false,
   forceString = false,
-  useNanoID = false,
+  useNanoID = false
 }: IGeneratorOptions = {}): { data: ITreeNodeData[]; total: number } => {
   let data: ITreeNodeData[] = []
   let total = 0
@@ -47,12 +54,15 @@ export default ({
     for (let i: number = 0; i < len; i++) {
       let title = inOrder ? orderCount : genRandomStr({ index: orderCount })
       if (forceString) title = title.toString()
-      const id = sameIdTitle ? title : genRandomStr({ index: orderCount, useNanoID })
+      const id = sameIdTitle
+        ? title
+        : genRandomStr({ index: orderCount, useNanoID })
       const node = {
         title,
         id,
         children: []
       }
+
       root.push(node)
       total++
       orderCount++

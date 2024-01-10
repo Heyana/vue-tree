@@ -278,7 +278,6 @@ declare const _default: import("vue-demi").DefineComponent<{
         setExpand: (key: TreeNodeKeyType, value: boolean, expandParent?: boolean) => void;
         setExpandKeys: (keys: TreeNodeKeyType[], value: boolean) => void;
         setExpandAll: (value: boolean) => void;
-        setNodeParent: (parentNode: TreeNode, node: TreeNode) => void;
         getCheckedNodes: (ignoreMode?: IgnoreType) => TreeNode[];
         getCheckedKeys: (ignoreMode?: IgnoreType) => TreeNodeKeyType[];
         getIndeterminateNodes: () => TreeNode[];

@@ -11,6 +11,8 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "declaration": true,
+    "declarationDir": "types",
     "lib": [
       "esnext",
       "dom"

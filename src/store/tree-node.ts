@@ -68,6 +68,7 @@ export default class TreeNode {
   reacData = reactive({
     showElement: true
   })
+  isTreeNode = true
 
   //#endregion Properties
 

@@ -7,22 +7,12 @@
       </div>
       <div :class="inputWrapperCls">
         <slot name="search-input">
-          <input
-            v-model="keyword"
-            type="text"
-            :class="inputCls"
-            :placeholder="searchPlaceholder"
-            :disabled="searchDisabled"
-            @input="handleSearch"
-          />
+          <input v-model="keyword" type="text" :class="inputCls" :placeholder="searchPlaceholder"
+            :disabled="searchDisabled" @input="handleSearch" />
         </slot>
       </div>
       <div :class="actionWrapperCls">
-        <span
-          v-if="showCheckedButton && checkable"
-          :class="checkedButtonCls"
-          @click="handleShowChecked"
-        >
+        <span v-if="showCheckedButton && checkable" :class="checkedButtonCls" @click="handleShowChecked">
           {{ checkedButtonText }}
         </span>
         <slot name="actions"></slot>
@@ -31,13 +21,7 @@
 
     <!-- 树区域 -->
     <div :class="treeWrapperCls">
-      <CTree
-        ref="treeRef"
-        v-bind="$attrs"
-        v-model="treeModelValue"
-        @set-data="onSetData"
-        @checked-change="checkedChange"
-      >
+      <CTree ref="treeRef" v-bind="$attrs" v-model="treeModelValue" @set-data="onSetData" @checked-change="checkedChange">
         <template v-for="(_, slot) in $slots" :name="slot" v-slot="scope">
           <slot :name="slot" v-bind="scope"></slot>
         </template>
@@ -156,7 +140,7 @@ export default defineComponent({
     })
     const isShowingChecked = ref(false)
     const keyword = ref('')
-    const debounceTimer: Ref<number | undefined> = ref(undefined)
+    const debounceTimer: Ref<any> = ref(undefined)
     const checkedCount = ref(0)
     const treeRef = ref()
     let ctreeMethods: Record<string, Function> = getCtreeMethods(treeRef)

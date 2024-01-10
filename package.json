@@ -1,6 +1,6 @@
 {
   "name": "vue-tree-fork",
-  "version": "3.2.2",
+  "version": "3.2.5",
   "types": "./types",
   "description": "A vue tree component using virtual list.",
   "main": "./dist/v3/vue-tree.umd.js",
@@ -17,7 +17,7 @@
   "scripts": {
     "dev": "vite",
     "dts": "vue-tsc --declaration --emitDeclarationOnly",
-    "build": "npm run dts && npm run build:2 && npm run build:3",
+    "build": "npm run dts  && npm run build:3",
     "build:2": "pnpm --filter vue2 run build",
     "build:3": "vite build",
     "docs": "vue-tsc --noEmit && vite build -c examples/vite.config.ts",

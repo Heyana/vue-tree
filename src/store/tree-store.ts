@@ -100,8 +100,15 @@ export default class TreeStore {
     checkableUnloadKeys: TreeNodeKeyType[] | null = null
   ): void {
     this.data = data.map(
-      (nodeData: ITreeNodeOptions): TreeNode =>
-        new TreeNode(nodeData, null, this.options.keyField, !!this.options.load)
+      (nodeData: ITreeNodeOptions | TreeNode): TreeNode =>
+        nodeData.isTreeNode
+          ? (nodeData as TreeNode)
+          : new TreeNode(
+              nodeData,
+              null,
+              this.options.keyField,
+              !!this.options.load
+            )
     )
     // 清空 mapData
     for (let key in this.mapData) delete this.mapData[key]
@@ -742,6 +749,7 @@ export default class TreeStore {
     parentKey: TreeNodeKeyType
   ): TreeNode | null {
     const parentNode = this.mapData[parentKey]
+    console.log(parentNode, 'parentNode')
     if (!parentNode.isLeaf) {
       return this.insertBefore(
         insertedNode,
@@ -1032,6 +1040,7 @@ export default class TreeStore {
     result: TreeNode[] = []
   ): TreeNode[] {
     const length = nodes.length
+    console.log(this.mapData, this, 'this.mapData')
     for (let i = 0; i < length; i++) {
       const node = nodes[i]
       const key: TreeNodeKeyType = node[this.options.keyField]
