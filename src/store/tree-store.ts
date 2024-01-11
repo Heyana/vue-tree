@@ -40,6 +40,11 @@ export interface IEventNames {
   check: NodeGeneralListenerType
   uncheck: NodeGeneralListenerType
   'checked-change': (nodes: TreeNode[], keys: TreeNodeKeyType[]) => void
+  'change-parent': (map: {
+    node: TreeNode
+    oldParent: TreeNode | null
+    newParent: TreeNode | null
+  }) => void
 }
 
 //#endregion Interfaces
@@ -677,6 +682,12 @@ export default class TreeStore {
       (parentNode && -1) || this.findIndex(referenceKey, this.data)
 
     this.insertIntoStore(node, parentNode, childIndex, flatIndex, dataIndex)
+    this.emit('change-parent', {
+      node,
+      oldParent: node.parent,
+      newParent: parentNode
+    })
+
     this.emit('visible-data-change')
     return node
   }
@@ -715,6 +726,11 @@ export default class TreeStore {
       (parentNode && -1) || this.findIndex(referenceKey, this.data) + 1
 
     this.insertIntoStore(node, parentNode, childIndex, flatIndex, dataIndex)
+    this.emit('change-parent', {
+      node,
+      oldParent: node.parent,
+      newParent: parentNode
+    })
     this.emit('visible-data-change')
     return node
   }
@@ -765,6 +781,12 @@ export default class TreeStore {
     const flatIndex = this.findIndex(parentKey) + 1
 
     this.insertIntoStore(node, parentNode, 0, flatIndex)
+    this.emit('change-parent', {
+      node,
+      oldParent: node.parent,
+      newParent: parentNode
+    })
+
     this.emit('visible-data-change')
     return node
   }

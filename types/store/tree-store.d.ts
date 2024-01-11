@@ -27,6 +27,11 @@ export interface IEventNames {
     check: NodeGeneralListenerType;
     uncheck: NodeGeneralListenerType;
     'checked-change': (nodes: TreeNode[], keys: TreeNodeKeyType[]) => void;
+    'change-parent': (map: {
+        node: TreeNode;
+        oldParent: TreeNode | null;
+        newParent: TreeNode | null;
+    }) => void;
 }
 type NodeGeneralListenerType = (node: TreeNode) => void;
 export type ListenerType<T extends keyof IEventNames> = IEventNames[T];

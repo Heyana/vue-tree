@@ -243,11 +243,7 @@ export default defineComponent({
       if (props.disableAll || props.data?.disabled || !props.checkable) return
       emit('check', fullData.value)
     }
-    function onSelectChange(): void {
-    }
-    function deepsetVisieble() {
 
-    }
 
     function handleSelect(e: MouseEvent): void {
       emit('click', fullData.value, e)
@@ -260,7 +256,6 @@ export default defineComponent({
       } else {
         handleExpand()
       }
-      onSelectChange()
     }
 
     function handleDblclick(e: MouseEvent): void {

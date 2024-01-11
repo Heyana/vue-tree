@@ -79,7 +79,9 @@ const storeEvents: Array<keyof IEventNames> = [
   'check',
   'uncheck',
   'checked-change',
-  'set-data'
+  'set-data',
+  //hxy
+  'change-parent'
 ]
 const EXCLUDED_TREE_NODE_EVENTS = ['node-drop', 'check', 'select', 'expand']
 
@@ -932,16 +934,20 @@ export default defineComponent({
     }
     let _lastSelectedNode: any = ref(null)
     const onSelectChange = (node: TreeNode) => {
-      console.log(80, '80');
+      if (!node || node.id === _lastSelectedNode.value?.id) return
       if (_lastSelectedNode.value) {
+
         deepSetSubSelect(_lastSelectedNode.value, false)
       }
       if (node) {
         _lastSelectedNode.value = node
+        if (node._parent) {
+          setExpand(node[props.keyField], true, true)
+        }
         deepSetSubSelect(node, true)
       }
-
     }
+
     const deepSetSubSelect = (node: TreeNode, state: boolean) => {
       node.children.map((i) => {
         i.subSelected = state
@@ -962,7 +968,8 @@ export default defineComponent({
       clearSelected,
       setExpand,
       setExpandKeys,
-      setExpandAll, setNodeParent,
+      setExpandAll,
+      setNodeParent,
       getCheckedNodes,
       getCheckedKeys,
       getIndeterminateNodes,
