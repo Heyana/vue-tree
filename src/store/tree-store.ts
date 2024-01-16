@@ -45,6 +45,7 @@ export interface IEventNames {
     oldParent: TreeNode | null
     newParent: TreeNode | null
   }) => void
+  'selected-map-change': (map: { map: IMapData }) => void
 }
 
 //#endregion Interfaces
@@ -80,7 +81,9 @@ export default class TreeStore {
   private unloadSelectedKey: TreeNodeKeyType | null = null
 
   /** 当前单选选中节点 key */
+  /** 当前单选选中节点 key */
   private currentSelectedKey: TreeNodeKeyType | null = null
+  currentSelectedMapData: IMapData = Object.create(null)
 
   /** 事件 listeners */
   private listenersMap: IListenersMap = {}
@@ -302,35 +305,17 @@ export default class TreeStore {
     triggerDataChange: boolean = true
   ): void {
     const node = this.mapData[key]
+    console.log('Log-- ', 'node,value', node, value)
     if (!node)
       return this.setUnloadSelected(key, value, triggerEvent, triggerDataChange)
     if (node.disabled) return
 
     if (node.selected === value) return // 当前节点已经是将要设置的状态，直接返回
-
-    if (key === this.currentSelectedKey) {
-      // 设置的节点即当前已选中节点
-      if (!value) {
-        // 取消当前选中节点
-        node.selected = value
-        this.currentSelectedKey = null
-      }
+    node.selected = value
+    if (value) {
+      this.currentSelectedMapData[key] = node
     } else {
-      // 设置的节点不是当前已选中节点，要么当前没有选中节点，要么当前有选中节点
-      if (value) {
-        if (this.currentSelectedKey === null) {
-          // 当前没有选中节点
-          node.selected = value
-          this.currentSelectedKey = node[this.options.keyField]
-        } else {
-          // 取消当前已选中，设置新的选中节点
-          if (this.mapData[this.currentSelectedKey]) {
-            this.mapData[this.currentSelectedKey].selected = false
-          }
-          node.selected = value
-          this.currentSelectedKey = node[this.options.keyField]
-        }
-      }
+      delete this.currentSelectedMapData[key]
     }
 
     if (triggerEvent) {
@@ -339,7 +324,9 @@ export default class TreeStore {
       } else {
         this.emit('unselect', node)
       }
-
+      this.emit('selected-map-change', {
+        map: this.currentSelectedMapData
+      })
       this.emit(
         'selected-change',
         this.getSelectedNode(),
@@ -1184,7 +1171,7 @@ export default class TreeStore {
   /**
    * 搜索节点在指定数组中的位置
    */
-  private findIndex(
+  findIndex(
     keyOrNode: TreeNode | TreeNodeKeyType,
     searchList: TreeNode[] | TreeNodeKeyType[] | null = this.flatData
   ): number {
@@ -1262,6 +1249,12 @@ export default class TreeStore {
     for (const eventName in this.listenersMap) {
       this.listenersMap[eventName] = []
     }
+  }
+  clearSelectedMap() {
+    Object.values(this.currentSelectedMapData).map(node => {
+      node.selected = false
+    })
+    this.currentSelectedMapData = {}
   }
   //#endregion Mini EventTarget
 }

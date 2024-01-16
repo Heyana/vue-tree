@@ -81,7 +81,8 @@ const storeEvents: Array<keyof IEventNames> = [
   'checked-change',
   'set-data',
   //hxy
-  'change-parent'
+  'change-parent',
+  'selected-map-change'
 ]
 const EXCLUDED_TREE_NODE_EVENTS = ['node-drop', 'check', 'select', 'expand']
 
@@ -733,9 +734,9 @@ export default defineComponent({
     function handleNodeSelect(node: TreeNode): void {
 
       if (props.enableLeafOnly && !node.isLeaf) return
-      onSelectChange(node)
 
-      nonReactive.store.setSelected(node[props.keyField], !node.selected)
+      // if (nonReactive.store.currentSelectedMapData[node[props.keyField]]) return
+      onSelectChange(node)
     }
     function handleNodeExpand(node: TreeNode): void {
       nonReactive.store.setExpand(node[props.keyField], !node.expand)
@@ -932,24 +933,95 @@ export default defineComponent({
       )
       // props.updateRenderNodes(true)
     }
+
+    //hxy
+    let isShift = false, isCtrl = false
+    window.addEventListener('keydown', (e) => {
+      console.log('Log-- ', 'e.key', e.key);
+      if (e.key.toLocaleLowerCase() === 'control') {
+        isCtrl = true
+      } else if (e.key.toLocaleLowerCase() === 'shift') {
+        isShift = true
+      }
+    })
+    window.addEventListener('keyup', (e) => {
+      console.log('Log-- ', 'e.key', e.key);
+      if (e.key.toLocaleLowerCase() === 'control') {
+        isCtrl = false
+      } else if (e.key.toLocaleLowerCase() === 'shift') {
+        isShift = false
+      }
+    })
     let _lastSelectedNode: any = ref(null)
     const onSelectChange = (node: TreeNode) => {
-      if (!node || node.id === _lastSelectedNode.value?.id) return
-      if (_lastSelectedNode.value) {
+      if (!node) return
+      if (isCtrl) {
+        if (_lastSelectedNode.value) {
+          deepSetSubSelect(_lastSelectedNode.value, false)
+        }
 
-        deepSetSubSelect(_lastSelectedNode.value, false)
+        setSelected(node.id, !node.selected)
+      } else {
+        if (_lastSelectedNode.value) {
+          deepSetSubSelect(_lastSelectedNode.value, false)
+          if (isShift) {
+            const parent1 = nonReactive.store.mapData[node[props.keyField]]._parent
+            const parent = nonReactive.store.mapData[_lastSelectedNode.value[props.keyField]]._parent
+            if (!parent && !parent1) {
+              const index1 = nonReactive.store.findIndex(node, nonReactive.store.data)
+              const index2 = nonReactive.store.findIndex(_lastSelectedNode.value, nonReactive.store.data)
+              const ls = nonReactive.store.data.slice(Math.min(index1, index2), Math.max(index1, index2) + 1)
+              ls.map((i) => {
+                setSelected(i.id, true)
+              })
+              return
+            } else if (parent?.id === parent1?.id) {
+              if (parent) {
+                const index1 = nonReactive.store.findIndex(node, parent?.children)
+                const index2 = nonReactive.store.findIndex(_lastSelectedNode.value, parent?.children)
+                const ls = parent.children.slice(Math.min(index1, index2), Math.max(index1, index2) + 1)
+                ls.map((i) => {
+                  setSelected(i.id, true)
+                })
+                return
+              }
+            } else {
+              console.log('Log-- ', 'node', node);
+
+              deepSetSubSelect(_lastSelectedNode.value, false)
+              return
+              // return
+            }
+          }
+          else {
+            nonReactive.store.clearSelectedMap()
+          }
+        }
       }
+      // if( node.id === _lastSelectedNode.value?.id)return 
+      // if (!isShift && !isCtrl) {
       if (node) {
         _lastSelectedNode.value = node
-        if (node._parent) {
-          setExpand(node[props.keyField], true, true)
+        if (isCtrl) {
+
+        } else {
+          if (node._parent) {
+            setExpand(node[props.keyField], true, true)
+          }
+          deepSetSubSelect(node, true)
+          nonReactive.store.setSelected(node[props.keyField], !node.selected)
+
         }
-        deepSetSubSelect(node, true)
+        console.log('Log-- ', 'nonReactive.store.', node, nonReactive.store);
       }
+      // }
+
+
     }
+    // setSelected
 
     const deepSetSubSelect = (node: TreeNode, state: boolean) => {
-      node.children.map((i) => {
+      nonReactive.store.getNode(node[props.keyField])?.children.map((i) => {
         i.subSelected = state
         if (i.children.length) {
           console.log(i, 'i');

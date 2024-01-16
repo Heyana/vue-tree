@@ -7,6 +7,8 @@
         return true
       }" @change-parent="(a) => {
   console.log(a, 'a');
+}" @selected-map-change="(e) => {
+  console.log('Log-- ', 'e', e);
 }">
       <template #empty>slot 传进来的暂无数据</template>
     </VTree>
@@ -52,10 +54,10 @@ export default defineComponent({
     console.log(data.value, 'data.value');
     setTimeout(() => {
       tree.value.setData(data.value)
-      setTimeout(() => {
-        tree.value.setExpand('1', true, true)
+      // setTimeout(() => {
+      //   tree.value.setExpand('1', true, true)
 
-      }, 1000)
+      // }, 1000)
       return
       console.log(tree.value, 'tree.value');
       tree.value.methods.setNodeParent({
@@ -67,7 +69,7 @@ export default defineComponent({
         tree.value.setData(data.value)
 
       }, 2000)
-    }, 1000)
+    }, 100)
     window.test = data
     return {
       data,

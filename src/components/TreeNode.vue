@@ -249,7 +249,7 @@ export default defineComponent({
       emit('click', fullData.value, e)
       if (props.selectable) {
         if (props.disableAll || props.data?.disabled) return
-        if (props.data?.selected && !props.unselectOnClick) return
+        // if (props.data?.selected && !props.unselectOnClick) return
         emit('select', fullData.value)
       } else if (props.checkable) {
         handleCheck()
