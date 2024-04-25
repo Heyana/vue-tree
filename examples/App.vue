@@ -41,6 +41,7 @@ export default defineComponent({
   },
   setup(props) {
     const components = {
+      Drag,
       Feature,
       Performance,
       Loading,
@@ -49,7 +50,6 @@ export default defineComponent({
       // SearchRootRemote,
       Drop,
       // DropRemote,
-      Drag,
       MyDrag,
       // DropDataChange,
       InsertRenderTree,

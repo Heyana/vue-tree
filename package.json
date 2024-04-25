@@ -1,6 +1,6 @@
 {
   "name": "vue-tree-fork",
-  "version": "3.2.8",
+  "version": "3.2.16",
   "types": "./types",
   "description": "A vue tree component using virtual list.",
   "main": "./dist/v3/vue-tree.umd.js",

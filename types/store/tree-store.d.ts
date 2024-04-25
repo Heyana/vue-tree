@@ -32,6 +32,9 @@ export interface IEventNames {
         oldParent: TreeNode | null;
         newParent: TreeNode | null;
     }) => void;
+    'selected-map-change': (map: {
+        map: IMapData;
+    }) => void;
 }
 type NodeGeneralListenerType = (node: TreeNode) => void;
 export type ListenerType<T extends keyof IEventNames> = IEventNames[T];
@@ -50,7 +53,9 @@ export default class TreeStore {
     /** 未加载但选中的单选节点 key */
     private unloadSelectedKey;
     /** 当前单选选中节点 key */
+    /** 当前单选选中节点 key */
     private currentSelectedKey;
+    currentSelectedMapData: IMapData;
     /** 事件 listeners */
     private listenersMap;
     constructor(options: ITreeStoreOptions);
@@ -103,7 +108,7 @@ export default class TreeStore {
      * @param value 是否选中
      * @param triggerEvent 是否触发事件
      */
-    setSelected(key: TreeNodeKeyType, value: boolean, triggerEvent?: boolean, triggerDataChange?: boolean): void;
+    setSelected(key: TreeNodeKeyType, value: boolean, triggerEvent?: boolean, triggerDataChange?: boolean, triggerMapChange?: boolean): void;
     /**
      * 设置未加载单选选中节点，不公开此 API
      */
@@ -231,10 +236,25 @@ export default class TreeStore {
     /**
      * 搜索节点在指定数组中的位置
      */
-    private findIndex;
+    findIndex(keyOrNode: TreeNode | TreeNodeKeyType, searchList?: TreeNode[] | TreeNodeKeyType[] | null): number;
     on<T extends keyof IEventNames>(eventName: T, listener: ListenerType<T> | Array<ListenerType<T>>): void;
     off<T extends keyof IEventNames>(eventName: T, listener?: ListenerType<T>): void;
     emit<T extends keyof IEventNames>(eventName: T, ...args: Parameters<IEventNames[T]>): void;
     disposeListeners(): void;
+    clearSelectedMap(): void;
+    deepSetSubSelect: (node: TreeNode, state: boolean) => void;
+    setSelect(node: TreeNode, state: boolean, map?: {
+        triggerEvent?: boolean;
+        triggerDataChange?: boolean;
+        triggerMapChange?: boolean;
+    }): void;
+    isParent(map: {
+        parentId: string;
+        node: TreeNode;
+    }): void;
+    isParentSelected(node: TreeNode): boolean;
+    isIncludedSelecteds(node: TreeNode, possibleIncludedNode: TreeNode | TreeNode[]): void;
+    private _isIncludedSelected;
+    getSelectedNodes(): TreeNode[];
 }
 export {};

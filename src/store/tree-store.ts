@@ -97,7 +97,6 @@ export default class TreeStore {
       case 'showElement':
         {
           this.hideElementIds.value[data.id] = false
-          console.log(this, 'this')
         }
         break
     }
@@ -301,40 +300,50 @@ export default class TreeStore {
   setSelected(
     key: TreeNodeKeyType,
     value: boolean,
-    triggerEvent: boolean = true,
-    triggerDataChange: boolean = true
+    triggerEvent?: boolean,
+    triggerDataChange?: boolean,
+    triggerMapChange?: boolean
   ): void {
     const node = this.mapData[key]
-    console.log('Log-- ', 'node,value', node, value)
     if (!node)
       return this.setUnloadSelected(key, value, triggerEvent, triggerDataChange)
     if (node.disabled) return
-
     if (node.selected === value) return // 当前节点已经是将要设置的状态，直接返回
     node.selected = value
+
+    Object.values(this.currentSelectedMapData).map(oldNode => {
+      const isChilrenSelected = this._isIncludedSelected(node, oldNode)
+      if (isChilrenSelected) {
+        this.setSelected(oldNode.id, false)
+      }
+    })
     if (value) {
       this.currentSelectedMapData[key] = node
+      this.deepSetSubSelect(node, true)
     } else {
       delete this.currentSelectedMapData[key]
+      this.deepSetSubSelect(node, false)
     }
-
-    if (triggerEvent) {
+    if (triggerEvent !== false) {
       if (node.selected) {
         this.emit('select', node)
       } else {
         this.emit('unselect', node)
       }
-      this.emit('selected-map-change', {
-        map: this.currentSelectedMapData
-      })
+
       this.emit(
         'selected-change',
         this.getSelectedNode(),
         this.getSelectedKey()
       )
     }
+    if (triggerMapChange !== false) {
+      this.emit('selected-map-change', {
+        map: this.currentSelectedMapData
+      })
+    }
 
-    if (triggerDataChange) {
+    if (triggerDataChange !== false) {
       this.emit('render-data-change')
     }
   }
@@ -424,7 +433,6 @@ export default class TreeStore {
     if (!node || (!expandParent && node.isLeaf)) return
 
     if (node.expand === value) return // 当前节点已经是将要设置的状态，直接返回
-    console.log(node.isLeaf, 'node.isLeaf')
     if (!node.isLeaf) {
       if (typeof this.options.load === 'function') {
         // 如果节点未加载过且将要设置为加载，则调用 load 方法
@@ -752,7 +760,6 @@ export default class TreeStore {
     parentKey: TreeNodeKeyType
   ): TreeNode | null {
     const parentNode = this.mapData[parentKey]
-    console.log(parentNode, 'parentNode')
     if (!parentNode.isLeaf) {
       return this.insertBefore(
         insertedNode,
@@ -1049,7 +1056,6 @@ export default class TreeStore {
     result: TreeNode[] = []
   ): TreeNode[] {
     const length = nodes.length
-    console.log(this.mapData, this, 'this.mapData')
     for (let i = 0; i < length; i++) {
       const node = nodes[i]
       const key: TreeNodeKeyType = node[this.options.keyField]
@@ -1253,8 +1259,64 @@ export default class TreeStore {
   clearSelectedMap() {
     Object.values(this.currentSelectedMapData).map(node => {
       node.selected = false
+      this.deepSetSubSelect(node, false)
     })
     this.currentSelectedMapData = {}
+  }
+  deepSetSubSelect = (node: TreeNode, state: boolean) => {
+    this.getNode(node['id'])?.children.map(i => {
+      i.subSelected = state
+      if (i.children.length) {
+        this.deepSetSubSelect(i, state)
+      }
+    })
+  }
+  setSelect(
+    node: TreeNode,
+    state: boolean,
+    map?: {
+      triggerEvent?: boolean
+      triggerDataChange?: boolean
+      triggerMapChange?: boolean
+    }
+  ) {
+    const { triggerEvent, triggerDataChange, triggerMapChange } = map || {}
+    this.setSelected(
+      node.id,
+      state,
+      triggerEvent,
+      triggerDataChange,
+      triggerMapChange
+    )
+    this.deepSetSubSelect(node, state)
+  }
+  isParent(map: { parentId: string; node: TreeNode }) {}
+  isParentSelected(node: TreeNode): boolean {
+    const tNode = this.mapData[node.id]
+    console.log('Log-- ', node._parent, this.mapData, 'node._parent')
+    if (!tNode._parent) return false
+    if (tNode._parent.selected) return true
+    return this.isParentSelected(tNode._parent)
+  }
+  isIncludedSelecteds(
+    node: TreeNode,
+    possibleIncludedNode: TreeNode | TreeNode[]
+  ) {
+    const ls = Array.isArray(possibleIncludedNode)
+      ? possibleIncludedNode
+      : [possibleIncludedNode]
+    // ls.map(iNode => )
+  }
+  private _isIncludedSelected(
+    node: TreeNode,
+    possibleIncludedNode: TreeNode
+  ): boolean {
+    if (!possibleIncludedNode._parent) return false
+    if (possibleIncludedNode._parent.id === node.id) return true
+    return this._isIncludedSelected(node, possibleIncludedNode._parent)
+  }
+  getSelectedNodes() {
+    return Object.values(this.currentSelectedMapData)
   }
   //#endregion Mini EventTarget
 }

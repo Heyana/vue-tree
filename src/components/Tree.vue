@@ -49,7 +49,7 @@ import {
   onMounted,
   onBeforeUnmount,
   PropType
-} from 'vue-demi'
+} from 'vue'
 import TreeStore, { TreeNode } from '../store'
 import CTreeNode from './TreeNode.vue'
 import LoadingIcon from './LoadingIcon.vue'
@@ -323,7 +323,6 @@ export default defineComponent({
     // }
   },
   setup(props, ctx) {
-    console.log(this, props, ctx, 'this,props');
     const prefixCls = 'ctree-tree'
     const sameValue = (newVal: VModelType, valueCache: VModelType): boolean => {
       if (Array.isArray(newVal) && Array.isArray(valueCache)) {
@@ -753,11 +752,11 @@ export default defineComponent({
       if (e.dataTransfer) {
         try {
           const targetNodeData = JSON.parse(e.dataTransfer.getData('node'))
+
           const targetKey = targetNodeData[props.keyField]
           const targetNode = getNode(targetKey)
 
           const referenceKey = data[props.keyField]
-          console.log(targetNode, referenceKey, data, props.keyField, 'targetNode');
           const shouldDrop: boolean = props.beforeDropMethod(
             data,
             targetNode,
@@ -859,7 +858,6 @@ export default defineComponent({
       )
       updateBlockData()
 
-      console.log(8908, '8908');
       updateRender()
     }
     /**
@@ -918,7 +916,6 @@ export default defineComponent({
       bottomSpaceHeight.value =
         blockAreaHeight.value -
         (topSpaceHeight.value + renderNodes.value.length * props.nodeMinHeight)
-      console.log(renderNodes, 'renderNodes');
     }
     //#endregion Calculate nodes
 
@@ -937,7 +934,6 @@ export default defineComponent({
     //hxy
     let isShift = false, isCtrl = false
     window.addEventListener('keydown', (e) => {
-      console.log('Log-- ', 'e.key', e.key);
       if (e.key.toLocaleLowerCase() === 'control') {
         isCtrl = true
       } else if (e.key.toLocaleLowerCase() === 'shift') {
@@ -945,7 +941,6 @@ export default defineComponent({
       }
     })
     window.addEventListener('keyup', (e) => {
-      console.log('Log-- ', 'e.key', e.key);
       if (e.key.toLocaleLowerCase() === 'control') {
         isCtrl = false
       } else if (e.key.toLocaleLowerCase() === 'shift') {
@@ -957,14 +952,17 @@ export default defineComponent({
       if (!node) return
       if (isCtrl) {
         if (_lastSelectedNode.value) {
-          deepSetSubSelect(_lastSelectedNode.value, false)
-        }
+          // deepSetSubSelect(_lastSelectedNode.value, false)
 
-        setSelected(node.id, !node.selected)
+        }
+        if (node.subSelected) return
+        nonReactive.store.setSelect(node, !node.selected)
+
       } else {
         if (_lastSelectedNode.value) {
-          deepSetSubSelect(_lastSelectedNode.value, false)
+          // deepSetSubSelect(_lastSelectedNode.value, false)
           if (isShift) {
+            if (nonReactive.store.getSelectedNodes().length > 1) return
             const parent1 = nonReactive.store.mapData[node[props.keyField]]._parent
             const parent = nonReactive.store.mapData[_lastSelectedNode.value[props.keyField]]._parent
             if (!parent && !parent1) {
@@ -972,7 +970,7 @@ export default defineComponent({
               const index2 = nonReactive.store.findIndex(_lastSelectedNode.value, nonReactive.store.data)
               const ls = nonReactive.store.data.slice(Math.min(index1, index2), Math.max(index1, index2) + 1)
               ls.map((i) => {
-                setSelected(i.id, true)
+                nonReactive.store.setSelect(i, true)
               })
               return
             } else if (parent?.id === parent1?.id) {
@@ -981,14 +979,12 @@ export default defineComponent({
                 const index2 = nonReactive.store.findIndex(_lastSelectedNode.value, parent?.children)
                 const ls = parent.children.slice(Math.min(index1, index2), Math.max(index1, index2) + 1)
                 ls.map((i) => {
-                  setSelected(i.id, true)
+                  nonReactive.store.setSelect(i, true)
                 })
                 return
               }
             } else {
-              console.log('Log-- ', 'node', node);
-
-              deepSetSubSelect(_lastSelectedNode.value, false)
+              // deepSetSubSelect(_lastSelectedNode.value, false)
               return
               // return
             }
@@ -1003,16 +999,12 @@ export default defineComponent({
       if (node) {
         _lastSelectedNode.value = node
         if (isCtrl) {
-
         } else {
           if (node._parent) {
             setExpand(node[props.keyField], true, true)
           }
-          deepSetSubSelect(node, true)
-          nonReactive.store.setSelected(node[props.keyField], !node.selected)
-
+          nonReactive.store.setSelect(node, !node.selected)
         }
-        console.log('Log-- ', 'nonReactive.store.', node, nonReactive.store);
       }
       // }
 
@@ -1024,7 +1016,6 @@ export default defineComponent({
       nonReactive.store.getNode(node[props.keyField])?.children.map((i) => {
         i.subSelected = state
         if (i.children.length) {
-          console.log(i, 'i');
           deepSetSubSelect(i, state)
         }
       })

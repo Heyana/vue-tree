@@ -300,7 +300,10 @@ export default defineComponent({
 
     function handleDragStart(e: DragEvent): void {
       if (e.dataTransfer) {
-        e.dataTransfer.setData('node', JSON.stringify(props.data))
+        e.dataTransfer.setData('node', JSON.stringify({
+          id: props.data?.id,
+        }))
+
       }
       if (props.data?.expand) handleExpand()
       emit('node-dragstart', fullData.value, e)

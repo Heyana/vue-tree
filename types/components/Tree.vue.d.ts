@@ -1,4 +1,4 @@
-import { VNode, Ref, PropType } from 'vue-demi';
+import { VNode, Ref, PropType } from 'vue';
 import TreeStore, { TreeNode } from '../store';
 import { FilterFunctionType } from '../store/tree-store';
 import { ITreeNodeOptions } from '../store/tree-node';
@@ -12,7 +12,7 @@ interface INonReactiveData {
     store: TreeStore;
     blockNodes: TreeNode[];
 }
-declare const _default: import("vue-demi").DefineComponent<{
+declare const _default: import("vue").DefineComponent<{
     /** 单选模式下为字符串或数字，多选模式下为数组或者以 separator 分隔的字符串。当即可单选又可多选时，value 是多选的值 */
     modelValue: PropType<string | number | TreeNodeKeyType[]>;
     /** 传入的树数据。数据量大时，不建议通过 props 传入数据，建议用 `setData` 方法代替 */
@@ -201,21 +201,21 @@ declare const _default: import("vue-demi").DefineComponent<{
     valueCache: Ref<VModelType>;
     /** 防抖计时器 id */
     debounceTimer: Ref<number | undefined>;
-    topSpaceStyles: import("vue-demi").ComputedRef<{
+    topSpaceStyles: import("vue").ComputedRef<{
         height: string;
     }>;
-    bottomSpaceStyles: import("vue-demi").ComputedRef<{
+    bottomSpaceStyles: import("vue").ComputedRef<{
         height: string;
     }>;
-    wrapperCls: import("vue-demi").ComputedRef<string[]>;
-    scrollAreaCls: import("vue-demi").ComputedRef<string[]>;
-    blockAreaCls: import("vue-demi").ComputedRef<string[]>;
-    emptyCls: import("vue-demi").ComputedRef<string[]>;
-    emptyTextDefaultCls: import("vue-demi").ComputedRef<string[]>;
-    loadingCls: import("vue-demi").ComputedRef<string[]>;
-    loadingWrapperCls: import("vue-demi").ComputedRef<string[]>;
-    loadingIconCls: import("vue-demi").ComputedRef<string[]>;
-    iframeCls: import("vue-demi").ComputedRef<string[]>;
+    wrapperCls: import("vue").ComputedRef<string[]>;
+    scrollAreaCls: import("vue").ComputedRef<string[]>;
+    blockAreaCls: import("vue").ComputedRef<string[]>;
+    emptyCls: import("vue").ComputedRef<string[]>;
+    emptyTextDefaultCls: import("vue").ComputedRef<string[]>;
+    loadingCls: import("vue").ComputedRef<string[]>;
+    loadingWrapperCls: import("vue").ComputedRef<string[]>;
+    loadingIconCls: import("vue").ComputedRef<string[]>;
+    iframeCls: import("vue").ComputedRef<string[]>;
     treeNodeListeners: Record<string, Function>;
     setData: (data: AnyPropsArrayType) => void;
     setChecked: (key: TreeNodeKeyType, value: boolean) => void;
@@ -316,7 +316,7 @@ declare const _default: import("vue-demi").DefineComponent<{
         updateRenderNodes: (isScroll?: boolean) => void;
         getNode: (key: TreeNodeKeyType) => TreeNode | null;
     };
-}, unknown, {}, {}, import("vue-demi").ComponentOptionsMixin, import("vue-demi").ComponentOptionsMixin, string[], string, import("vue-demi").PublicProps, Readonly<import("vue-demi").ExtractPropTypes<{
+}, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, string[], string, import("vue").PublicProps, Readonly<import("vue").ExtractPropTypes<{
     /** 单选模式下为字符串或数字，多选模式下为数组或者以 separator 分隔的字符串。当即可单选又可多选时，value 是多选的值 */
     modelValue: PropType<string | number | TreeNodeKeyType[]>;
     /** 传入的树数据。数据量大时，不建议通过 props 传入数据，建议用 `setData` 方法代替 */
